@@ -145,3 +145,34 @@ Sugerencia de qué capturar contra un tablero real, una vez lo pruebes:
    para que se vea que el marcador se oculta pero no se borra.
 
 Tamaño recomendado por Chrome Web Store: 1280x800 o 640x400.
+
+---
+
+## Instrucciones de la prueba (dashboard → Acceso)
+
+Le explica al revisor cómo probar la extensión, ya que no funciona por
+sí sola: necesita un tablero real de Trello.
+
+```
+La extensión funciona sobre trello.com y necesita una tarjeta con un
+marcador en el título para mostrar algo.
+
+1. Instala la extensión.
+2. Ve a https://trello.com e inicia sesión (una cuenta gratuita es
+   suficiente).
+3. Abre cualquier tablero, o crea uno nuevo.
+4. Crea una tarjeta con este título exacto: Prueba (3) [1]
+5. En la vista del tablero debería aparecer una insignia junto a la
+   tarjeta (3 estimado, 1 consumido), y el marcador de texto desaparece
+   visualmente del título (el dato sigue en el título real).
+6. Abre el detalle de esa tarjeta (clic sobre ella): debajo del título
+   aparece un selector con botones para asignar puntos con un clic.
+```
+
+---
+
+## Distribución (dashboard → Compilación → Distribución)
+
+- Visibilidad: **Público**.
+- Precio: gratis (no se activa monetización).
+- Regiones: todas, salvo que se prefiera limitarlo.
