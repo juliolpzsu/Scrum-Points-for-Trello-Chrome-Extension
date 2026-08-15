@@ -96,6 +96,35 @@ propia tarjeta, y ofrecer un selector para asignarlo. No hace nada más.
 
 ---
 
+## Justificación del permiso de host
+
+El dashboard trata el `matches: ["https://trello.com/*"]` de los
+content scripts como un permiso de host, aunque `manifest.json` no
+tenga un bloque `permissions` separado. Justificación:
+
+```
+La extensión necesita ejecutarse sobre https://trello.com/* para leer
+el título de las tarjetas visibles en el tablero que el usuario tiene
+abierto, mostrar insignias de puntos e insertar el selector en el
+detalle de la tarjeta. No se solicita acceso a ningún otro dominio ni
+se envían datos fuera del navegador.
+```
+
+---
+
+## Justificación de uso de código remoto
+
+La extensión no usa código remoto; el dashboard pide declararlo igual:
+
+```
+La extensión no ejecuta código remoto. Todo el JavaScript está
+empaquetado dentro de la propia extensión (carpeta src/); no se
+descarga, genera dinámicamente ni evalúa ningún script externo en
+tiempo de ejecución.
+```
+
+---
+
 ## Pestaña de privacidad del dashboard
 
 Al no declarar ningún permiso, la mayoría de las casillas de recogida
