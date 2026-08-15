@@ -1,0 +1,12 @@
+# Notas de trabajo internas, no se publican
+CLAUDE.md
+
+# SO / editores
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Paquete generado al subir a la Chrome Web Store
+*.zip

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Scrum Points for Trello — banco de pruebas (no es parte de la extensión)</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; margin: 0; background: #f4f5f7; color: #172b4d; }
+  header { background: #172b4d; color: #fff; padding: 12px 20px; }
+  header p { margin: 4px 0 0; font-size: 13px; color: #b6c2cf; }
+  main { display: flex; gap: 24px; padding: 20px; align-items: flex-start; }
+  #board { display: flex; gap: 16px; }
+  [data-testid="list"] { background: #ebecf0; border-radius: 8px; padding: 8px; width: 220px; }
+  [data-testid="list-header"] { display: flex; align-items: center; justify-content: space-between; font-weight: 700; padding: 4px; }
+  [data-testid="list-card"] { background: #fff; border-radius: 6px; padding: 8px; margin: 6px 0; box-shadow: 0 1px 0 rgba(9,30,66,.25); }
+  [data-testid="card-name"] { font-size: 14px; }
+  [data-testid="card-front-badges"] { margin-top: 4px; }
+  #panel { width: 380px; }
+  #panel section { background: #fff; border-radius: 8px; padding: 12px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(9,30,66,.15); }
+  #panel h2 { font-size: 14px; margin: 0 0 8px; }
+  #results div { font-size: 13px; padding: 3px 0; font-family: Consolas, monospace; }
+  .pass { color: #216e4e; }
+  .fail { color: #ae2a19; font-weight: 700; }
+  [role="dialog"] { background: #fff; border-radius: 8px; padding: 12px; }
+  [data-testid="card-back-title-input"] { width: 100%; box-sizing: border-box; font-size: 15px; padding: 6px; }
+  #titleValue { font-family: Consolas, monospace; font-size: 12px; background: #f4f5f7; padding: 6px; border-radius: 4px; margin-top: 6px; word-break: break-all; }
+  button.addcard { margin-top: 6px; font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <strong>Banco de pruebas — Scrum Points for Trello</strong>
+  <p>Página local para verificar la lógica en un navegador real. NO es parte de la extensión
+     (el manifest.json no la referencia). Simula el DOM de Trello con los mismos data-testid
+     documentados en DECISIONS.md y carga el código real de src/.</p>
+</header>
+<main>
+  <div id="board">
+    <div data-testid="list">
+      <div data-testid="list-header">
+        <span data-testid="list-name">Por hacer</span>
+      </div>
+      <div data-testid="list-cards">
+        <div data-testid="list-card">
+          <div data-testid="card-name">Arreglar login (3)</div>
+          <div data-testid="card-front-badges"></div>
+        </div>
+        <div data-testid="list-card">
+          <div data-testid="card-name">Tarea sin estimar (?)</div>
+          <div data-testid="card-front-badges"></div>
+        </div>
+        <div data-testid="list-card-gap"></div>
+      </div>
+    </div>
+    <div data-testid="list">
+      <div data-testid="list-header">
+        <span data-testid="list-name">En curso</span>
+      </div>
+      <div data-testid="list-cards">
+        <div data-testid="list-card">
+          <div data-testid="card-name">Refactor pagos (5) [2]</div>
+          <div data-testid="card-front-badges"></div>
+        </div>
+        <div data-testid="list-card">
+          <div data-testid="card-name">Bug urgente [1.5]</div>
+          <div data-testid="card-front-badges"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel">
+    <section>
+      <h2>Resultados automáticos</h2>
+      <div id="results">Ejecutando…</div>
+      <button class="addcard" id="addCardBtn">Añadir tarjeta nueva (4) a "En curso" y re-comprobar</button>
+    </section>
+
+    <section>
+      <h2>Prueba manual del picker (necesita un clic real tuyo)</h2>
+      <p style="font-size:12px;color:#5e6c84">
+        Este es el único paso que no se puede automatizar: según lo documentado en DECISIONS.md,
+        Trello (y por diseño esta extensión) solo guarda con una pulsación de Enter real del
+        usuario. Aquí no hay guardado GraphQL de verdad, pero sirve para comprobar que
+        <code>execCommand('insertText')</code> escribe bien en el textarea al pulsar un botón
+        del picker con un clic de verdad, y que el aviso "pulsa Enter" aparece y desaparece.
+      </p>
+      <div role="dialog">
+        <div data-testid="card-back-header">
+          <h2 data-testid="card-back-title-input-view">Tarjeta de prueba</h2>
+        </div>
+      </div>
+      <div id="titleValue"></div>
+    </section>
+  </div>
+</main>
+
+<script src="../src/parser.js"></script>
+<script src="../src/dom-utils.js"></script>
+<script src="../src/badges.js"></script>
+<script src="../src/totals.js"></script>
+<script src="../src/picker.js"></script>
+<script src="../src/observer.js"></script>
+<script src="../src/main.js"></script>
+
+<script>
+// --- arnés de pruebas, no forma parte de la extensión ---
+
+// El picker real busca [data-testid="card-back-title-input"] (un <textarea>).
+// En Trello ese textarea solo existe en modo edición; aquí lo creamos ya
+// presente para poder probar el picker sin tener que simular el clic que
+// lo activa (eso ya se prueba indirectamente: si no existiera, picker.js
+// mostraría el aviso de error, que también es un resultado válido a observar).
+(function setupFakeTextarea() {
+  var dialog = document.querySelector('[role="dialog"]');
+  var header = dialog.querySelector('[data-testid="card-back-header"]');
+  var textarea = document.createElement('textarea');
+  textarea.setAttribute('data-testid', 'card-back-title-input');
+  textarea.value = 'Tarjeta de prueba';
+  textarea.rows = 1;
+  header.insertBefore(textarea, header.firstChild);
+
+  var display = document.getElementById('titleValue');
+  function refresh() { display.textContent = 'textarea.value = ' + JSON.stringify(textarea.value); }
+  refresh();
+  textarea.addEventListener('input', refresh);
+  ['keydown', 'input'].forEach(function (ev) {
+    textarea.addEventListener(ev, function () { setTimeout(refresh, 0); });
+  });
+})();
+
+function log(container, ok, label) {
+  var div = document.createElement('div');
+  div.className = ok ? 'pass' : 'fail';
+  div.textContent = (ok ? '✓ ' : '✗ ') + label;
+  container.appendChild(div);
+}
+
+function runChecks() {
+  var results = document.getElementById('results');
+  results.textContent = '';
+
+  var cards = document.querySelectorAll('[data-testid="list-card"]');
+  var loginCard = cards[0];
+  var unestCard = cards[1];
+  var refactorCard = cards[2];
+  var bugCard = cards[3];
+
+  // 1. Insignia de puntos estimados
+  var loginBadges = loginCard.querySelectorAll('.spt-badge');
+  log(results, loginBadges.length === 1 && loginBadges[0].textContent === '3',
+    'Tarjeta "(3)" -> insignia estimada = 3 (encontrado: ' +
+    Array.prototype.map.call(loginBadges, function (b) { return b.textContent; }).join(',') + ')');
+
+  // 2. Marcador oculto en el título pero el texto sigue existiendo
+  var loginName = loginCard.querySelector('[data-testid="card-name"]');
+  var hiddenSpan = loginName.querySelector('.spt-hidden-marker');
+  log(results, !!hiddenSpan && hiddenSpan.textContent === '(3)' && getComputedStyle(hiddenSpan).display === 'none',
+    'Marcador "(3)" oculto visualmente pero presente en el título real');
+  log(results, loginName.textContent === 'Arreglar login (3)',
+    'textContent del título no ha perdido el dato: ' + JSON.stringify(loginName.textContent));
+
+  // 3. Sin estimar -> insignia "?"
+  var unestBadges = unestCard.querySelectorAll('.spt-badge');
+  log(results, unestBadges.length === 1 && unestBadges[0].textContent === '?',
+    'Tarjeta "(?)" -> insignia sin estimar = ?');
+
+  // 4. Estimado + consumido a la vez
+  var refBadges = refactorCard.querySelectorAll('.spt-badge');
+  var refTexts = Array.prototype.map.call(refBadges, function (b) { return b.textContent; });
+  log(results, refTexts.indexOf('5') !== -1 && refTexts.indexOf('2') !== -1,
+    'Tarjeta "(5) [2]" -> insignias 5 y 2 (encontrado: ' + refTexts.join(',') + ')');
+
+  // 5. Solo consumido, con decimal
+  var bugBadges = bugCard.querySelectorAll('.spt-badge');
+  log(results, bugBadges.length === 1 && bugBadges[0].textContent === '1.5',
+    'Tarjeta "[1.5]" -> insignia consumida = 1.5');
+
+  // 6. list-card-gap no se trata como tarjeta
+  var gap = document.querySelector('[data-testid="list-card-gap"]');
+  log(results, gap.querySelectorAll('.spt-badge').length === 0,
+    'list-card-gap no recibe insignias (no es una tarjeta real)');
+
+  // 7. Total de la primera lista: 3 estimados + 1 sin estimar
+  var list1 = document.querySelectorAll('[data-testid="list"]')[0];
+  var list1Total = list1.querySelector('[data-spt-list-total="1"]');
+  log(results, !!list1Total && list1Total.textContent.replace(/\s+/g, '') === '3+?',
+    'Total lista "Por hacer" = 3+? (encontrado: ' + (list1Total ? list1Total.textContent : 'ninguno') + ')');
+
+  // 8. Total de la segunda lista: 5 estimados, 3.5 consumidos
+  var list2 = document.querySelectorAll('[data-testid="list"]')[1];
+  var list2Total = list2.querySelector('[data-spt-list-total="1"]');
+  var list2Text = list2Total ? list2Total.textContent.replace(/\s+/g, '') : '';
+  log(results, list2Text.indexOf('5') !== -1 && list2Text.indexOf('3.5') !== -1,
+    'Total lista "En curso" incluye 5 y 3.5 (encontrado: ' + list2Text + ')');
+
+  // 9. Panel flotante de total de tablero
+  var boardTotal = document.getElementById('spt-board-total');
+  log(results, !!boardTotal, 'Panel de total de tablero presente');
+
+  // 10. El picker se inyectó en el diálogo
+  var pickerPanel = document.querySelector('[data-spt-picker="1"]');
+  log(results, !!pickerPanel, 'Panel del picker inyectado en card-back-header');
+  var estButtons = pickerPanel ? pickerPanel.querySelectorAll('.spt-picker-row')[0].querySelectorAll('.spt-picker-btn') : [];
+  log(results, estButtons.length === 11, // 9 valores fibonacci + "?" + "Quitar"
+    'Fila "Estimado" tiene 9 valores + "?" + "Quitar" (encontrado: ' + estButtons.length + ')');
+}
+
+// Dejamos un margen para que el MutationObserver + rAF de observer.js
+// terminen su primera pasada antes de comprobar el resultado.
+setTimeout(runChecks, 600);
+
+document.getElementById('addCardBtn').addEventListener('click', function () {
+  var list2Cards = document.querySelectorAll('[data-testid="list"]')[1].querySelector('[data-testid="list-cards"]');
+  var card = document.createElement('div');
+  card.setAttribute('data-testid', 'list-card');
+  var name = document.createElement('div');
+  name.setAttribute('data-testid', 'card-name');
+  name.textContent = 'Tarjeta añadida en caliente (4)';
+  var badges = document.createElement('div');
+  badges.setAttribute('data-testid', 'card-front-badges');
+  card.appendChild(name);
+  card.appendChild(badges);
+  list2Cards.appendChild(card);
+
+  setTimeout(function () {
+    var ok = card.querySelectorAll('.spt-badge').length === 1 && card.querySelector('.spt-badge').textContent === '4';
+    var results = document.getElementById('results');
+    var div = document.createElement('div');
+    div.className = ok ? 'pass' : 'fail';
+    div.textContent = (ok ? '✓ ' : '✗ ') + 'MutationObserver detectó la tarjeta añadida en caliente y pintó su insignia (4)';
+    results.appendChild(div);
+  }, 500);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Scrum Points for Trello",
+  "version": "1.0.0",
+  "description": "Reimplementación independiente y no oficial de \"Scrum for Trello\": insignias de puntos de historia y tiempo consumido en tarjetas de Trello. Sin recogida de datos, sin servidor.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://trello.com/*"],
+      "js": [
+        "src/parser.js",
+        "src/dom-utils.js",
+        "src/badges.js",
+        "src/totals.js",
+        "src/picker.js",
+        "src/observer.js",
+        "src/main.js"
+      ],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+/*
+ * Scrum Points for Trello — styles.css
+ * Prefijo spt- en todo para no chocar con clases de Trello.
+ */
+
+.spt-hidden-marker {
+  display: none;
+}
+
+.spt-badge-group {
+  display: inline-flex;
+  gap: 4px;
+  margin: 2px 4px 2px 0;
+}
+
+.spt-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 20px;
+  color: #ffffff;
+}
+
+.spt-badge--estimated {
+  background: #3f51b5;
+}
+
+.spt-badge--consumed {
+  background: #ffca28;
+  color: #3d3300;
+}
+
+.spt-badge--unestimated {
+  background: #78909c;
+}
+
+.spt-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  height: 20px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 20px;
+  color: #ffffff;
+  margin-left: 6px;
+}
+
+.spt-chip--estimated {
+  background: #3f51b5;
+}
+
+.spt-chip--consumed {
+  background: #ffca28;
+  color: #3d3300;
+}
+
+.spt-list-total {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.spt-board-total {
+  /* "top" se calcula y se fija en JS (totals.js) a partir de la posición
+     real del contenedor de listas, no a un número fijo: la altura de la
+     barra superior de Trello varía según el ancho de ventana y el nombre
+     del tablero, así que un valor fijo se solapaba con sus botones. */
+  position: fixed;
+  right: 12px;
+  z-index: 2147483000;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(9, 30, 66, 0.85);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  pointer-events: none;
+}
+
+.spt-board-total__label {
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  margin-right: 2px;
+}
+
+/*
+ * El panel del picker vive dentro del DOM de Trello (card-back-header). Su
+ * propio CSS de reset (p.ej. estilos globales para <button>) puede tener
+ * más especificidad que una simple clase nuestra y ganarnos la partida
+ * (así se veían los botones apilados uno por línea). Por eso todo va
+ * anclado al id #spt-picker-panel (un id pesa más que cualquier
+ * combinación razonable de clases) y con !important. Los colores son
+ * propios y fijos, no heredan el tema claro/oscuro de Trello, para que
+ * siempre haya contraste suficiente y el mismo aspecto en cualquier lado.
+ */
+#spt-picker-panel {
+  /* card-back-header suele ser un contenedor flex en fila (icono/avatar +
+     contenido). Sin esto, nuestro panel heredaba ese contexto y quedaba
+     encogido a una columna estrecha -> los botones se apilaban uno debajo
+     de otro pegados al borde. Forzamos que ocupe toda la fila él solo. */
+  display: block !important;
+  width: 100% !important;
+  flex: 1 1 100% !important;
+  align-self: stretch !important;
+  box-sizing: border-box !important;
+  margin-top: 12px !important;
+  padding: 14px 16px !important;
+  border-radius: 12px !important;
+  background: #1d2530 !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif !important;
+}
+
+#spt-picker-panel .spt-picker-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 10px 0 !important;
+}
+
+#spt-picker-panel .spt-picker-row + .spt-picker-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+#spt-picker-panel .spt-picker-row__label {
+  flex: 0 0 100% !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: #8fa3bf !important;
+  margin: 0 0 2px !important;
+}
+
+#spt-picker-panel .spt-picker-btn {
+  box-sizing: border-box !important;
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 40px !important;
+  height: 36px !important;
+  margin: 0 !important;
+  padding: 0 14px !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 18px !important;
+  background: #2c3644 !important;
+  color: #eaf0f7 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: normal !important;
+  cursor: pointer !important;
+}
+
+#spt-picker-panel .spt-picker-btn:hover {
+  background: #3a4757 !important;
+  border-color: rgba(255, 255, 255, 0.32) !important;
+}
+
+#spt-picker-panel .spt-picker-btn--active {
+  background: #3f51b5 !important;
+  border-color: #7c8ef0 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(124, 142, 240, 0.35) !important;
+}
+
+#spt-picker-panel .spt-picker-btn--unestimated {
+  color: #a9b6c6 !important;
+}
+
+#spt-picker-panel .spt-picker-btn--clear {
+  color: #ff8a80 !important;
+  border-color: rgba(255, 138, 128, 0.35) !important;
+  margin-left: 8px !important;
+}
+
+#spt-picker-panel .spt-save-hint {
+  display: none !important;
+  margin-top: 10px !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  background: #3a2f00 !important;
+  border: 1px solid #806a00 !important;
+  color: #ffd666 !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+}
+
+#spt-picker-panel .spt-save-hint--visible {
+  display: block !important;
+}
+
+#spt-picker-panel .spt-save-hint--error {
+  background: #3a1410 !important;
+  border-color: #a1362b !important;
+  color: #ffb4a8 !important;
+}
