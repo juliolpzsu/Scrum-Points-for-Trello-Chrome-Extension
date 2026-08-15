@@ -68,6 +68,17 @@ Detalle de tarjeta: `[data-testid="card-back-header"]`,
 presente en modo edición), `[role="dialog"]` como contenedor del
 diálogo. En modo lectura el título es un `<h2>` sin `data-testid`.
 
+**Corrección tras pruebas manuales**: `card-back-header` no es la
+cabecera ancha que aparenta a simple vista — es una columna estrecha
+(icono/portada de la tarjeta) con `display: flex` en fila y hermanos con
+`flex-shrink: 0`. Cualquier elemento que se inyecte como hijo suyo
+hereda ese ancho mínimo por mucho `width: 100% !important` que se le
+ponga, porque el 100% de un contenedor estrecho sigue siendo estrecho
+(y si además hay flex-shrink en juego, el elemento nuevo absorbe todo el
+encogimiento). El picker se inserta como **hermano** de
+`card-back-header` (justo después, con `insertAdjacentElement`), no como
+hijo — así vive en el contenedor ancho real del contenido de la tarjeta.
+
 ### Cómo Trello guarda el título de una tarjeta
 
 El título se guarda por GraphQL (`POST /gateway/api/graphql`), no por la

@@ -208,9 +208,15 @@
 
   function ensurePicker(dialog) {
     var header = dialog.querySelector('[data-testid="card-back-header"]');
-    if (!header) return;
+    if (!header || !header.parentNode) return;
 
-    var panel = header.querySelector('[data-spt-picker="1"]');
+    // El picker NO se mete dentro de card-back-header: ese contenedor
+    // resultó ser una columna estrecha (icono/portada), no la cabecera
+    // ancha que parecía a simple vista, y cualquier hijo suyo hereda ese
+    // ancho reducido por mucho CSS que le pongamos. Se inserta como
+    // hermano justo después, ya en el contenedor ancho del contenido de
+    // la tarjeta.
+    var panel = document.getElementById('spt-picker-panel');
     if (!panel) {
       panel = document.createElement('div');
       panel.id = 'spt-picker-panel';
@@ -221,7 +227,7 @@
       panel.appendChild(buildRow(dialog, panel, 'estimated', 'Estimado'));
       panel.appendChild(buildRow(dialog, panel, 'consumed', 'Consumido'));
 
-      header.appendChild(panel);
+      header.insertAdjacentElement('afterend', panel);
     }
 
     refreshActiveState(dialog, panel);
