@@ -1,5 +1,7 @@
 # Scrum Points for Trello
 
+**📦 Publicada en la [Chrome Web Store](https://chromewebstore.google.com/detail/scrum-points-for-trello/kffaimmdpfeleelcjibkcnbmnfdnamce)**
+
 Extensión de Chrome (Manifest V3) que añade insignias de puntos de
 historia y tiempo consumido a las tarjetas de Trello, con totales por
 lista y por tablero.
