@@ -66,9 +66,14 @@
       var before = title.slice(0, existingMarker.index);
       var after = title.slice(existingMarker.index + existingMarker.length);
       if (newRaw === null) {
-        var joined = before.replace(/[ \t]+$/, '') +
-          (after.replace(/^[ \t]+/, '') ? ' ' + after.replace(/^[ \t]+/, '') : after);
-        return joined.replace(/[ \t]+$/, '');
+        var beforeTrimmed = before.replace(/[ \t]+$/, '');
+        var afterTrimmed = after.replace(/^[ \t]+/, '');
+        // El marcador puede estar al principio del título (before vacío): no dejar
+        // un espacio sobrante delante del texto restante en ese caso.
+        var joined = beforeTrimmed && afterTrimmed
+          ? beforeTrimmed + ' ' + afterTrimmed
+          : beforeTrimmed + afterTrimmed;
+        return joined;
       }
       return before + newRaw + after;
     }
@@ -87,6 +92,7 @@
       container.appendChild(hint);
     }
     hint.textContent = 'Pulsa Enter para guardar';
+    hint.classList.remove('spt-save-hint--error');
     hint.classList.add('spt-save-hint--visible');
 
     global.clearTimeout(hint._sptTimer);
