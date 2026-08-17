@@ -10,3 +10,6 @@ Thumbs.db
 
 # Paquete generado al subir a la Chrome Web Store
 *.zip
+
+# Log local del chequeo semanal de reseñas (automation/weekly-local-check.ps1)
+automation/local-run.log

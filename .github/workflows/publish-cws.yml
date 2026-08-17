@@ -1,0 +1,46 @@
+name: Publicar en la Chrome Web Store
+
+# Se dispara solo cuando cambia el número de versión en manifest.json y ese cambio llega a
+# main (es decir: después de fusionar un Pull Request de un arreglo o mejora). También se
+# puede lanzar a mano desde la pestaña Actions de GitHub por si hace falta reintentar.
+on:
+  push:
+    branches: [main]
+    paths:
+      - manifest.json
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Empaquetar la extensión
+        run: |
+          zip -r extension.zip \
+            manifest.json \
+            LICENSE \
+            icons/ \
+            src/ \
+            styles.css
+
+      - name: Subir y publicar en la Chrome Web Store
+        env:
+          EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+        run: |
+          npx chrome-webstore-upload-cli@3 upload \
+            --source extension.zip \
+            --extension-id "$EXTENSION_ID" \
+            --client-id "$CLIENT_ID" \
+            --client-secret "$CLIENT_SECRET" \
+            --refresh-token "$REFRESH_TOKEN"
+
+          npx chrome-webstore-upload-cli@3 publish \
+            --extension-id "$EXTENSION_ID" \
+            --client-id "$CLIENT_ID" \
+            --client-secret "$CLIENT_SECRET" \
+            --refresh-token "$REFRESH_TOKEN"

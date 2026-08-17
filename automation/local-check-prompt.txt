@@ -1,0 +1,41 @@
+Eres un agente que se ejecuta cada lunes en el PC local de Julio (no en la nube), precisamente
+porque desde este PC SÍ hay acceso a chromewebstore.google.com. El entorno cloud donde corre la
+rutina semanal principal tiene ese dominio bloqueado por política de red del sandbox, así que
+este chequeo local existe solo para salvar ese hueco.
+
+Objetivo de esta ejecución: consultar la ficha pública de la extensión "Scrum Points for Trello"
+en la Chrome Web Store y dejar los datos frescos en el repo para que la rutina en la nube (que
+corre unas horas después, el mismo lunes) los use.
+
+URL de la ficha: https://chromewebstore.google.com/detail/kffaimmdpfeleelcjibkcnbmnfdnamce?ucbcb=1
+(el parámetro ucbcb=1 evita la redirección al aviso de cookies de la UE; si aun así redirige,
+sigue la redirección con WebFetch con normalidad)
+
+Pasos:
+
+1. Ejecuta `git pull --ff-only` antes de nada, para no pisar cambios que la rutina en la nube
+   haya subido en ejecuciones anteriores.
+2. Consulta la ficha con WebFetch. Extrae: puntuación media, número de valoraciones, y cada
+   reseña visible (autor, estrellas 1-5, texto completo, fecha si aparece).
+3. Lee automation/reviews-state.json. Si no existe o está vacío, trátalo como lista `[]`.
+4. Calcula un identificador simple para cada reseña extraída (por ejemplo los primeros 16
+   caracteres de sha256(autor + "|" + texto), con `sha256sum` por Bash) y compáralo con los
+   hashes ya guardados en el estado.
+5. Añade al final de la lista SOLO las reseñas que no estén ya guardadas, con esta forma exacta:
+   {"hash": "...", "autor": "...", "puntuacion": N, "texto": "...", "fecha": "YYYY-MM-DD o null",
+   "visto_por_primera_vez": "YYYY-MM-DD de hoy", "procesado": false}
+   No toques ni reordenes las entradas ya existentes. No cambies su campo "procesado".
+6. Sobrescribe automation/store-stats.json con:
+   {"puntuacion_media": N o null, "numero_valoraciones": N o null, "ultima_comprobacion": "YYYY-MM-DD de hoy"}
+7. Si automation/reviews-state.json o automation/store-stats.json cambiaron: haz `git add` solo
+   de esos dos archivos, commit con el mensaje "Actualizar estado de reseñas (chequeo local
+   semanal)" y `git push`. Si no hay ningún cambio real, no hagas commit vacío.
+8. No toques ningún otro archivo del repo. No arregles código ni abras Pull Requests: de eso se
+   encarga la rutina en la nube más tarde, con más contexto y con revisión humana antes de
+   fusionar nada.
+9. Si WebFetch falla (bloqueo, error de red, timeout), reintenta una vez. Si sigue fallando, no
+   toques ningún archivo y termina sin más: la rutina en la nube sabrá manejar la ausencia de
+   datos frescos esa semana (simplemente no habrá reseñas nuevas que procesar).
+
+Al terminar, resume en una línea de texto plano qué has hecho (cuántas reseñas nuevas, si las
+estadísticas cambiaron, o si no había nada nuevo).
