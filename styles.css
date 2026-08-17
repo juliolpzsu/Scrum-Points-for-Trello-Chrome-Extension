@@ -3,8 +3,23 @@
  * Prefijo spt- en todo para no chocar con clases de Trello.
  */
 
+/*
+ * display:none quitaría el marcador también del árbol de accesibilidad,
+ * no solo de la pantalla: un lector de pantalla dejaría de anunciar el
+ * dato "(3)"/"[2]" aunque siga presente en el título real. Este patrón
+ * (clip a 1x1px, position absolute, overflow hidden) lo oculta solo
+ * visualmente y lo mantiene disponible para lectores de pantalla.
+ */
 .spt-hidden-marker {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .spt-badge-group {
