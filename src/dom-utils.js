@@ -54,8 +54,9 @@
 
   /**
    * Oculta visualmente uno o varios rangos de texto dentro de `el` sin
-   * borrar el dato: el texto sigue en el DOM (textContent no cambia),
-   * solo se envuelve en un <span> con display:none.
+   * borrar el dato ni ocultarlo de lectores de pantalla: el texto sigue
+   * en el DOM (textContent no cambia), solo se envuelve en un <span> con
+   * la clase spt-hidden-marker (recorte visual, sin display:none).
    *
    * @param {Element} el
    * @param {Array<{index:number, length:number}>} ranges - ordenados por index
