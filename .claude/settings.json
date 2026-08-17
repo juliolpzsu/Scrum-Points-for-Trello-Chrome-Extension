@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git pull:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git status:*)",
+      "Bash(sha256sum:*)",
+      "Write(automation/reviews-state.json)",
+      "Write(automation/store-stats.json)",
+      "Edit(manifest.json)",
+      "Write(manifest.json)",
+      "Edit(src/*)",
+      "Write(src/*)",
+      "Edit(styles.css)",
+      "Write(styles.css)"
+    ]
+  }
+}
