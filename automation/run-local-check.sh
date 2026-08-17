@@ -6,6 +6,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
+# Invocado por el Programador de tareas via `wsl.exe -- bash script.sh`: shell no
+# interactivo y no de login, así que no carga ~/.bashrc y el PATH no incluye
+# ~/.local/bin, donde vive el binario `claude`. Sin esta línea el script fallaba
+# con "claude: command not found" y el Programador de tareas lo marcaba como error.
+export PATH="$HOME/.local/bin:$PATH"
+
 git pull --ff-only
 
 # --dangerously-skip-permissions: sin esto, al ejecutarse desde el Programador de tareas
