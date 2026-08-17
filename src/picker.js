@@ -68,7 +68,10 @@
       if (newRaw === null) {
         var joined = before.replace(/[ \t]+$/, '') +
           (after.replace(/^[ \t]+/, '') ? ' ' + after.replace(/^[ \t]+/, '') : after);
-        return joined.replace(/[ \t]+$/, '');
+        // El marcador puede estar al principio del título (before === ''),
+        // en cuyo caso el trozo `after` conserva su espacio inicial y el
+        // título resultante empezaría con un espacio sobrante.
+        return joined.replace(/^[ \t]+/, '').replace(/[ \t]+$/, '');
       }
       return before + newRaw + after;
     }
@@ -87,6 +90,7 @@
       container.appendChild(hint);
     }
     hint.textContent = 'Pulsa Enter para guardar';
+    hint.classList.remove('spt-save-hint--error');
     hint.classList.add('spt-save-hint--visible');
 
     global.clearTimeout(hint._sptTimer);
