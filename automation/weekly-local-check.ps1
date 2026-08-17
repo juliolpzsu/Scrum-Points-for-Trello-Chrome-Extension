@@ -16,14 +16,14 @@ $repoWsl     = "/mnt/c/Users/julio/Desktop/scrum-trello/scrum-points-trello"
 $logFile     = Join-Path $repoWindows "automation\local-run.log"
 
 $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-Add-Content -Path $logFile -Value "`n=== Ejecución $timestamp ==="
+Add-Content -Path $logFile -Encoding utf8 -Value "`n=== Ejecución $timestamp ==="
 
-$bashCommand = @"
-cd '$repoWsl' && \
-git pull --ff-only && \
-cat automation/local-check-prompt.txt | claude -p --allowedTools 'WebFetch,Read,Write,Bash(git pull:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(git status:*),Bash(sha256sum:*)'
-"@
+# La lógica real vive en run-local-check.sh (no aquí embebida) para que el paso
+# PowerShell -> wsl.exe no dependa de escapar bien comillas ni saltos de línea.
+# Se captura la salida como texto y se escribe en UTF-8 explícito: la redirección
+# nativa *>> de PowerShell 5.1 usa UTF-16LE por defecto y deja el log ilegible.
+$output = wsl.exe -d Ubuntu -- bash "$repoWsl/automation/run-local-check.sh" 2>&1
+$exitCode = $LASTEXITCODE
+$output | Out-File -FilePath $logFile -Append -Encoding utf8
 
-wsl.exe -d Ubuntu -- bash -lc $bashCommand *>> $logFile
-
-Add-Content -Path $logFile -Value "=== Fin ejecución $timestamp (código de salida: $LASTEXITCODE) ==="
+Add-Content -Path $logFile -Encoding utf8 -Value "=== Fin ejecución $timestamp (código de salida: $exitCode) ==="
