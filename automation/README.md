@@ -15,11 +15,15 @@ leer reseñas públicas. La única forma de leer la ficha es desde una red norma
    cada lunes por la mañana): entra a la ficha, guarda las reseñas nuevas en
    `automation/reviews-state.json` y las estadísticas en `automation/store-stats.json`, y
    sube ese cambio a `main` directamente (son solo datos, no código de la extensión).
-   Desde el 2026-08-18, `run-local-check.sh` lee la ficha con **Chrome real** (perfil
-   dedicado, cuenta de Julio López, vía la skill `how-to-chrome`) en vez de con `WebFetch`:
-   la ficha es una SPA que carga las reseñas por JavaScript, y `WebFetch` a veces la leía
-   vacía de forma ambigua. Esto abre brevemente una ventana de Chrome (perfil separado del
-   Chrome normal de Julio, nunca toca sus pestañas) cada lunes por la mañana.
+   Desde el 2026-08-18, `run-local-check.sh` lee la ficha con **Chrome real** (vía la skill
+   `how-to-chrome`) en vez de con `WebFetch`: la ficha es una SPA que carga las reseñas por
+   JavaScript, y `WebFetch` a veces la leía vacía de forma ambigua. Esto abre brevemente una
+   ventana de Chrome cada lunes por la mañana, en una carpeta de perfil (`Claude-ScrumPointsTrello-Profile`)
+   **exclusiva de este proyecto** — nunca se usa ni se toca el Chrome normal de Julio. Se
+   probó primero reutilizando el perfil dedicado genérico de la skill (`CDP-Profile`), pero
+   resultó ser en la práctica la ventana de Chrome que Julio usa a diario, y cerrar/relanzar
+   ese proceso le interrumpió dos veces (le cerró una serie que estaba viendo). No hace falta
+   ninguna sesión iniciada en ese perfil: la ficha de la Chrome Web Store es pública.
 2. **Rutina en la nube** (una hora después, mismo lunes): lee esos dos archivos, decide si
    alguna reseña describe un fallo concreto arreglable, intenta el arreglo, y si lo consigue
    abre un Pull Request (nunca sube código directo a `main`: lo revisas y fusionas tú).
