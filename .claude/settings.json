@@ -7,14 +7,11 @@
       "Bash(git push:*)",
       "Bash(git status:*)",
       "Bash(sha256sum:*)",
-      "Write(automation/reviews-state.json)",
-      "Write(automation/store-stats.json)",
+      "Edit(automation/reviews-state.json)",
+      "Edit(automation/store-stats.json)",
       "Edit(manifest.json)",
-      "Write(manifest.json)",
       "Edit(src/*)",
-      "Write(src/*)",
-      "Edit(styles.css)",
-      "Write(styles.css)"
+      "Edit(styles.css)"
     ]
   }
 }
