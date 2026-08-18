@@ -13,3 +13,7 @@ Thumbs.db
 
 # Log local del chequeo semanal de reseñas (automation/weekly-local-check.ps1)
 automation/local-run.log
+
+# Volcado de texto de la ficha de la Chrome Web Store (automation/run-local-check.sh),
+# se regenera en cada ejecución, no hace falta versionarlo
+automation/.store-listing.txt
