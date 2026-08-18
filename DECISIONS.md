@@ -132,6 +132,15 @@ que un futuro cambio pueda romper.
   `requestAnimationFrame`, y todas las funciones de pintado son
   idempotentes para no realimentar el propio observer.
 
+## Objetivo de crecimiento (a partir de 2026-08-18)
+
+Julio ha pedido explícitamente que, cuando haya ocasión durante el mantenimiento semanal, se
+intente que la extensión llegue a más usuarios — no busca beneficio económico, solo alcance.
+No es una tarea puntual, es un objetivo de fondo: al buscar mejoras pequeñas y seguras cada
+semana, considerar también mejoras de descubribilidad (ficha de la store, README, presencia en
+comunidades relevantes de Trello/scrum), no solo bugs de código. Nada de trucos que violen la
+política antispam de la store (comprar reseñas, bots de instalación, SEO agresivo).
+
 ## Sintaxis de usuario
 
 - `(3)` — puntos de historia estimados
