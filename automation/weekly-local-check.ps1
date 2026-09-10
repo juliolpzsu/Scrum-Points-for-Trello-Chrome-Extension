@@ -16,7 +16,10 @@
 
 $ErrorActionPreference = "Stop"
 
-$repoWindows = "C:\Users\julio\Desktop\scrum-trello\scrum-points-trello"
+# 2026-09-10: el repo se movio de Desktop\scrum-trello a Desktop\Proyectos\scrum-trello (todos
+# los proyectos activos viven ahora agrupados ahi). La ruta vieja dejo de existir y la tarea
+# programada fallaba cada lunes abriendo una ventana de PowerShell con el error a la vista.
+$repoWindows = "C:\Users\julio\Desktop\Proyectos\scrum-trello\scrum-points-trello"
 $gitBash     = "C:\Program Files\Git\bin\bash.exe"
 $logFile     = Join-Path $repoWindows "automation\local-run.log"
 
