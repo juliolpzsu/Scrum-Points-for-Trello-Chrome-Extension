@@ -55,6 +55,11 @@
     group.setAttribute('data-spt-badge-group', '1');
     group.setAttribute('data-spt-sig', sig);
     group.setAttribute('data-spt', '1');
+    // El dato ya es accesible vía el marcador oculto del título (ver
+    // hideTextRanges en dom-utils.js): sin esto, un lector de pantalla
+    // anunciaba el mismo número dos veces por tarjeta, sin ninguna
+    // etiqueta que explicara qué representa la segunda lectura.
+    group.setAttribute('aria-hidden', 'true');
     group.className = 'spt-badge-group';
 
     if (parsed.estimated) {
