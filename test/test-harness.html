@@ -155,8 +155,13 @@ function runChecks() {
   // 2. Marcador oculto en el título pero el texto sigue existiendo
   var loginName = loginCard.querySelector('[data-testid="card-name"]');
   var hiddenSpan = loginName.querySelector('.spt-hidden-marker');
-  log(results, !!hiddenSpan && hiddenSpan.textContent === '(3)' && getComputedStyle(hiddenSpan).display === 'none',
-    'Marcador "(3)" oculto visualmente pero presente en el título real');
+  // No comprobamos display:none: desde cbff1d4 el marcador se oculta con el
+  // patrón de recorte 1x1px (position absolute + clip) precisamente para que
+  // NO desaparezca del árbol de accesibilidad (ver styles.css y DECISIONS.md).
+  var hiddenStyle = hiddenSpan && getComputedStyle(hiddenSpan);
+  log(results, !!hiddenSpan && hiddenSpan.textContent === '(3)' &&
+    hiddenStyle.display !== 'none' && hiddenStyle.position === 'absolute' && hiddenStyle.width === '1px',
+    'Marcador "(3)" oculto visualmente (recorte 1x1px) pero presente en el título real y accesible');
   log(results, loginName.textContent === 'Arreglar login (3)',
     'textContent del título no ha perdido el dato: ' + JSON.stringify(loginName.textContent));
 
