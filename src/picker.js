@@ -86,6 +86,8 @@
       hint = document.createElement('div');
       hint.setAttribute('data-spt-hint', '1');
       hint.setAttribute('data-spt', '1');
+      hint.setAttribute('role', 'status');
+      hint.setAttribute('aria-live', 'polite');
       hint.className = 'spt-save-hint';
       container.appendChild(hint);
     }
@@ -117,6 +119,8 @@
           var h = document.createElement('div');
           h.setAttribute('data-spt-hint', '1');
           h.setAttribute('data-spt', '1');
+          h.setAttribute('role', 'status');
+          h.setAttribute('aria-live', 'polite');
           h.className = 'spt-save-hint';
           panel.appendChild(h);
           return h;
